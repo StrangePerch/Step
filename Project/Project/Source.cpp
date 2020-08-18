@@ -15,5 +15,4 @@ int foo2()
 int main()
 {
 	cout << "Hello World" << endl;
-	cout << "Hello C++" << endl;
 }
