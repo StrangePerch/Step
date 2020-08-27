@@ -1,18 +1,17 @@
-#include "iostream"
+#include <iostream>
+#include "AbstractFactory.h"
 
 using namespace std;
 
-int foo()
-{
-	cout << "foo" << endl;
-}
-
-int foo2()
-{
-	cout << "foo2" << endl;
-}
-
 int main()
 {
-	cout << "Hello World" << endl;
+	Car* car = new Car;
+	CarConfigurator conf;
+	conf.setConfiguration(new MyCar);
+	cout << "Before:" << endl;
+	car->print();
+	conf.configurate(car);
+	cout << endl << "After:" << endl;
+	car->print();
+
 }
