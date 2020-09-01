@@ -1,17 +1,21 @@
 #include <iostream>
-#include "AbstractFactory.h"
+#include <string>
+#include <fstream>
 
 using namespace std;
 
+#include "Builder.h"
+
+
 int main()
 {
-	Car* car = new Car;
-	CarConfigurator conf;
-	conf.setConfiguration(new MyCar);
-	cout << "Before:" << endl;
-	car->print();
-	conf.configurate(car);
-	cout << endl << "After:" << endl;
-	car->print();
+	MusicCenterBuilder a;
+	ManualBuilder c; 
+	Director b(c);
+	b.buildMaxiMC();
+	c.getResult()->print();
+	b.setBuilder(a);
+	b.buildMaxiMC();
+	a.getResult()->print();
 
 }
