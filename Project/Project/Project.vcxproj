@@ -142,6 +142,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AbstractFactory.h" />
+    <ClInclude Include="Builder.h" />
+    <ClInclude Include="DVD.h" />
     <ClInclude Include="Factory.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
