@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Файлы заголовков\Include">
+      <UniqueIdentifier>{893ec7ef-302d-4de9-992a-1b667f31c57a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source.cpp">
@@ -32,14 +35,23 @@
     <ClInclude Include="Builder.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Prototype.h">
+    <ClInclude Include="Bridge.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Decorator.h">
+    <ClInclude Include="string.h">
+      <Filter>Файлы заголовков\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="iostream.h">
+      <Filter>Файлы заголовков\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="fstream.h">
+      <Filter>Файлы заголовков\Include</Filter>
+    </ClInclude>
+    <ClInclude Include="Composite.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Adapter.h">
-      <Filter>Файлы заголовков</Filter>
+    <ClInclude Include="list.h">
+      <Filter>Файлы заголовков\Include</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
