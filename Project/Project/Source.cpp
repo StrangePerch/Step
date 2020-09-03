@@ -4,18 +4,15 @@
 
 using namespace std;
 
-#include "Builder.h"
-
+#include "Adapter.h"
 
 int main()
 {
-	MusicCenterBuilder a;
-	ManualBuilder c; 
-	Director b(c);
-	b.buildMaxiMC();
-	c.getResult()->print();
-	b.setBuilder(a);
-	b.buildMaxiMC();
-	a.getResult()->print();
-
+	Car* car = new Car;
+	Man* man = new Man;
+	Camel* camel = new Camel;
+	Ship* ship = new Ship;
+	man->travel(car);
+	man->travel(new CamelAdapter(camel));
+	man->travel(new ShipAdapter(ship));
 }
