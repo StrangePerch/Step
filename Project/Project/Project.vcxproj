@@ -157,6 +157,8 @@
     <ClInclude Include="Proxy.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="string.h" />
+    <ClInclude Include="Template.h" />
+    <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
