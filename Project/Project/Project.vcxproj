@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Observer.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="State.cpp" />
   </ItemGroup>
@@ -158,8 +159,11 @@
     <ClInclude Include="list.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Mediator.h" />
+    <ClInclude Include="Memento.h" />
+    <ClInclude Include="Observer.h" />
     <ClInclude Include="Proxy.h" />
     <ClInclude Include="State.h" />
+    <ClInclude Include="Strategy.h" />
     <ClInclude Include="string.h" />
     <ClInclude Include="vector.h" />
   </ItemGroup>
