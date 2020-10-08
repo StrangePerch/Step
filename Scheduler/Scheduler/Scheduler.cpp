@@ -4,7 +4,8 @@
 string* _cin()
 {
 	char temp[80];
-	
+
+	cin.get();
 	cin.getline(temp, 80);
 	
 	return new string(temp);
@@ -45,6 +46,7 @@ void Scheduler::add(Task* task)
 	sorted_by_date.insert(make_pair(*task->finish, task));
 	sorted_by_title.insert(make_pair(task->title, task));
 	sorted_by_tag.insert(make_pair(task->tag, task));
+	sorted_by_priority.insert(make_pair(task->priority, task));
 }
 
 void Scheduler::del(Task* task)
@@ -121,43 +123,58 @@ void Scheduler::print()
 {
 	int counter = 0;
 
-	std::cout << "NOW:" << endl;
+	int first = false;
+	
 	for (auto task : tasks)
 	{
 		if (*task.second->start <= *today_full() && *task.second->finish >= *today_full())
 		{
+			if (first) std::cout << "NOW:" << endl;
 			counter++;
 			std::cout << "#" << counter << "- " << *task.second << endl;
 		}
 	}
 
-	std::cout << "TODAY:" << endl;
+	first = false;
+
 	counter = 0;
 	for (auto task : tasks)
 	{
 		if (*task.second->start == *today() || *task.second->finish == *today())
 		{
+			if (first) std::cout << "TODAY:" << endl;
 			counter++;
 			std::cout << "#" << counter << "- " << *task.second << endl;
 		}
 	}
 
-	std::cout << "TASKS:" << endl;
-	counter = 0;
-	for (auto task : tasks)
+	if (tasks.size())
 	{
-		counter++;
-		std::cout << "#" << counter << "- " << *task.second << endl;
+		std::cout << "TASKS:" << endl;
+		counter = 0;
+		for (auto task : tasks)
+		{
+			counter++;
+			std::cout << "#" << counter << "- " << *task.second << endl;
+		}
 	}
+	else
+		if (expired.size()) std::cout << "EVERYTHING EXPIRED NEXT TIME TRY TO DO FASTER" << endl;
+		else std::cout << "NO TASKS EXIST" << endl;
 
 	counter = 0;
 
-	std::cout << "EXPIRED:" << endl;
-	for (auto task : expired)
+	if (expired.size())
 	{
-		counter++;
-		cout << "#" << counter << "- " << *task.second << endl;
+		std::cout << "EXPIRED:" << endl;
+		for (auto task : expired)
+		{
+			counter++;
+			cout << "#" << counter << "- " << *task.second << endl;
+		}
 	}
+	else
+	std::cout << "NOTHING EXPIRED" << endl;
 }
 
 void Scheduler::colorize(Date& date)
@@ -241,50 +258,155 @@ void Scheduler::calendar(int month, int year, int x, int y)
 	gotoxy(x, ++y);
 }
 
+void Scheduler::date_in(Task* task, int x, int y)
+{
+	int date[12];
+
+	int month, day, year, hour, min;
+
+	bool second = false;
+	
+	int pos = 0;
+
+	for (size_t i = 0; i < 12; i++)
+	{
+		date[i] = 0;
+	}
+	
+	while (true)
+	{
+		gotoxy(x, y);
+		for (int i = 0; i < 60; ++i)
+		{
+			cout << ' ';
+		}
+		gotoxy(x, y);
+		cout << "Date: ";
+		if (second) cout << *task->start << " - ";
+		for (int i = 0; i < pos; ++i)
+		{
+			month = date[2] * 10 + date[3];
+			day = date[0] * 10 + date[1];
+			year = date[4] * 1000 + date[5] * 100 + date[6] * 10 + date[7];
+			hour = date[8] * 10 + date[9];
+			min = date[10] * 10 + date[11];
+			
+			if (month > 12)
+			{
+				month = 12;
+				date[2] = 1;
+				date[3] = 2;
+			}
+
+			int max = getDaysInMonth(month, year);
+			
+			if(day > max)
+			{
+				date[0] = max / 10;
+				date[1] = max % 10;
+			}
+			if(hour > 24)
+			{
+				date[8] = 2;
+				date[9] = 4;
+			}
+			if (min > 59)
+			{
+				date[10] = 5;
+				date[11] = 9;
+			}
+			if(hour == 24)
+			{
+				date[10] = 0;
+				date[11] = 0;
+			}
+			if (i == 2 || i == 4) cout << '/';
+			if (i == 8) cout << ' ';
+			if (i == 10) cout << ':';
+			cout << date[i];
+		}
+
+		month = date[2] * 10 + date[3];
+		day = date[0] * 10 + date[1];
+		year = date[4] * 1000 + date[5] * 100 + date[6] * 10 + date[7];
+		hour = date[8] * 10 + date[9];
+		min = date[10] * 10 + date[11];
+		
+		int key;
+		key = _getch();
+
+		switch (key)
+		{
+		case '-':
+			task->start = new Date(day, month, year, hour, min);
+			task->finish = task->start;
+			pos = 0;
+			second = true;
+			break;
+		case 13:
+		case 77:
+			if (pos == 12)
+			{
+				if (!second)
+				{
+					task->start = new Date(day, month, year, hour, min);
+					task->finish = task->start;
+				}
+				else
+				{
+					task->finish = new Date(day, month, year, hour, min);
+				}
+			}
+			return;
+		case '\b':
+			pos--;
+			if (pos < 0)
+				if (second)
+				{
+					second = false;
+					pos = 12;
+				}
+				else pos = 0;
+			break;
+		default:
+			key -= '0';
+			if(key >= 0 && key <= 9)
+			{
+				if (pos < 12)
+				{
+					date[pos] = key;
+					pos++;
+				}
+			}
+			
+		}
+		
+	}
+}
+
 void Scheduler::add_menu()
 {
 	cout << "Title: ";
-	string title;
-	std::cin >> title;
+	string title = *_cin();
+	int prior;
+	cout << "Priority: ";
+	cin >> prior;
 	cout << "Tag: ";
-	string tag;
-	std::cin >> tag;
+	string tag = *_cin();
 	cout << "Task: ";
-	string task;
-	std::cin >> task;
-	cout << "Long(from, till) or short (at)? (1,0)" << endl;
-	bool choice;
-	std::cin >> choice;
-	Date* date[2];
-	for (size_t i = 0; i <= choice; i++)
-	{
-		cout << "Date #" << i + 1 << endl;
-		cout << "Day: ";
-		int day;
-		std::cin >> day;
-		cout << "Month: ";
-		int month;
-		std::cin >> month;
-		cout << "Year: ";
-		int year;
-		std::cin >> year;
-		cout << "Hour: ";
-		int hour;
-		std::cin >> hour;
-		cout << "Minute: ";
-		int minute;
-		std::cin >> minute;
-		date[i] = new Date(day, month, year, hour, minute);
-	}
-	if (!choice)
-		add(new Task(title, task, tag, date[0]));
-	else
-		add(new Task(title, task, tag, date[0], date[1]));
+	string task = *_cin();
+
+	Task* temp = new Task(title, task, tag);
+	temp->priority = prior;
+	
+	date_in(temp,0,4);
+	
+	add(temp);
 }
 
 void Scheduler::find_menu()
 {
-	vector<string> list = {"Title", "Tag", "Date", "Exit"};
+	vector<string> list = {"Title", "Tag", "Date", "Priority", "Exit"};
 	Menu<string> main(list, 0, 1);
 
 	while (true)
@@ -300,6 +422,9 @@ void Scheduler::find_menu()
 			break;
 		case 2:
 			find_by_date();
+			break;
+		case 3:
+			find_by_prior();
 			break;
 		default: return;
 		}
@@ -433,6 +558,66 @@ void Scheduler::find_by_date()
 	std::system("cls");
 }
 
+void Scheduler::find_by_prior()
+{
+	int choice;
+	vector<Task> list;
+	map<int, int> prior_map;
+	vector<int> prior;
+
+	std::system("cls");
+
+	map<int, Task*>::iterator it;
+
+	int i = 1;
+	cout << "Sorted by priority" << endl;
+	prior.clear();
+	for (auto temp : sorted_by_priority)
+	{
+		prior_map.insert(make_pair(temp.second->priority, temp.second->priority));
+		cout << "#" << i << "- " << *temp.second << endl;
+		i++;
+	}
+
+	for (auto t : prior_map)
+	{
+		prior.push_back(t.second);
+	}
+	cout << "Priority: ";
+
+	Menu<int> menu1(prior, 0, i + 1);
+	choice = menu1.Enter();
+	std::system("cls");
+
+	i = 1;
+
+	int pri = prior[choice];
+
+	list.clear();
+
+	for (auto temp : sorted_by_priority)
+	{
+		if (temp.second->priority == pri)
+		{
+			list.push_back(*temp.second);
+			i++;
+		}
+	}
+
+	//list.push_back("EXIT");
+	Menu<Task> menu(list, 0, 0);
+	choice = menu.Enter();
+	//if (choice != list.size() - 1) break;
+
+	auto fin = sorted_by_title.find(list[choice].title);
+
+	cout << endl << endl;
+
+	task_menu(fin->second);
+	std::system("pause");
+	std::system("cls");
+}
+
 void Scheduler::main_menu()
 {
 	vector<string> list = {"ShowAll", "AddNew", "Find", "Exit"};
@@ -464,78 +649,55 @@ void Scheduler::main_menu()
 
 void Scheduler::edit_menu(Task* task)
 {
-	system("cls");
-	task->print();
-	const vector<string> list = {"Title", "Tag", "Date", "Task", "EXIT"};
-	Menu<string> menu(list, 0, 8);
-	int choice = menu.Enter();
-
-	bool l;
-
-	switch (choice)
+	while (1)
 	{
-	case 0:
-		cout << "Title: ";
-		cin >> task->title;
-		break;
-	case 1:
-		cout << "Tag: ";
-		cin >> task->title;
-		break;
-	case 2:
-		cout << "Date: (From , till), (at) press 0 or 1";
-		cin >> l;
-		if (l)
-		{
-			cout << "Date: ";
-			cout << "-Day: ";
-			int day;
-			cin >> day;
-			cout << "-Month: ";
-			int month;
-			cin >> month;
-			cout << "-Year: ";
-			int year;
-			cin >> year;
-			Date* temp = new Date(day, month, year);
-			task->start = temp;
-			task->finish = temp;
-		}
-		else
-		{
-			cout << "From: ";
-			cout << "-Day: ";
-			int day;
-			cin >> day;
-			cout << "-Month: ";
-			int month;
-			cin >> month;
-			cout << "-Year: ";
-			int year;
-			cin >> year;
-			Date* temp = new Date(day, month, year);
-			task->start = temp;
-			cout << "Till: ";
-			cout << "-Day: ";
-			cin >> day;
-			cout << "-Month: ";
-			cin >> month;
-			cout << "-Year: ";
-			cin >> year;
-			temp = new Date(day, month, year);
-			task->finish = temp;
-		}
+		system("cls");
+		task->print();
+		const vector<string> list = { "Title", "Tag", "Date", "Task", "Priority", "EXIT" };
+		Menu<string> menu(list, 0, 7);
+		int choice = menu.Enter();
 
-		break;
-	case 3:
-		cout << "Task: ";
-		task->title = *_cin();
-		break;
-	default:
-		return;
+		bool l;
+
+		switch (choice)
+		{
+		case 0:
+			system("cls");
+			task->print();
+			cout << "Title: ";
+			cin >> task->title;
+			break;
+		case 1:
+			system("cls");
+			task->print();
+			cout << "Tag: ";
+			cin >> task->tag;
+			break;
+		case 2:
+
+			system("cls");
+			task->print();;
+			date_in(task, 0, 8);
+
+			break;
+		case 3:
+			system("cls");
+			task->print();
+			cout << "Task: ";
+			task->task = *_cin();
+			break;
+		case 4:
+			system("cls");
+			task->print();
+			cout << "Priority: ";
+			cin >> task->priority;
+			break;
+		default:
+			return;
+		}
+		del(task);
+		add(task);
 	}
-	del(task);
-	add(task);
 }
 
 void Scheduler::task_menu(Task* task)
@@ -543,7 +705,7 @@ void Scheduler::task_menu(Task* task)
 	system("cls");
 	task->print();
 	const vector<string> list = {"Check as finished", "Edit", "EXIT"};
-	Menu<string> menu(list, 0, 5);
+	Menu<string> menu(list, 0, 8);
 	int choice = menu.Enter();
 
 	switch (choice)

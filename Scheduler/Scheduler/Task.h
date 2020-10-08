@@ -3,11 +3,14 @@
 #include <fstream>
 using namespace std;
 
+
 class Task
 {
 public:
+	
 	Date* start;
 	Date* finish;
+	int priority = 0;
 	string title;
 	string tag;
 	string task;
@@ -16,6 +19,7 @@ public:
 	{
 		load(in);
 	}
+
 
 	void saveStr(ofstream& out, string& str)
 	{
@@ -44,6 +48,7 @@ public:
 		saveStr(out, title);
 		saveStr(out, task);
 		saveStr(out, tag);
+		out << priority << ' ';
 		start->save(out);
 		finish->save(out);
 		out << endl;
@@ -54,8 +59,18 @@ public:
 		loadStr(in,title);
 		loadStr(in, task);
 		loadStr(in, tag);
+		in >> priority;
 		start = new Date(in);
 		finish = new Date(in);
+	}
+
+	Task(string title, string task, string tag)
+	{
+		this->title = title;
+		this->task = task;
+		this->start = nullptr;
+		this->finish = nullptr;
+		this->tag = tag;
 	}
 
 	//One day task
@@ -97,6 +112,10 @@ public:
 			cout << "Date: " << *start << " - " << *finish << endl;
 		}
 
+		cout << "Tag: " << tag << endl;
+
+		cout << "Priority: " << priority << endl;
+		
 		cout << "Task: " << task << endl;
 
 		cout << "Expired? - ";
@@ -106,12 +125,13 @@ public:
 	}
 
 	friend ostream& operator<< (ostream& os, Task& task)
-	{
-		os << task.title << " " << task.tag;
-		if (task.start != task.finish)
-			os << " from " << *task.start << " till " << *task.finish;
+	{		
+		os << setw(10) << task.title << " " << setw(10) << task.tag;
+		if (!(*task.start == *task.finish))
+			os << " from [" << *task.start << "] till [" << *task.finish << ']';
 		else
-			os << " at " << *task.start;
+			os << " at [" << *task.start << "]                             ";
+		os << " priority - " << task.priority;
 		return os;
 	}
 	

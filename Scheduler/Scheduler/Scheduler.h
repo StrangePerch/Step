@@ -21,6 +21,7 @@ public:
 	map <string, Task*> sorted_by_title;
 	multimap <string, Task*> sorted_by_tag;
 	map <Date, Task*> sorted_by_date;
+	multimap <int, Task*> sorted_by_priority;
 
 	Scheduler();
 
@@ -48,6 +49,8 @@ public:
 
 	void calendar(int month, int year, int x, int y);
 
+	void date_in(Task* task, int x , int y);
+	
 	void add_menu();
 
 	void find_menu();
@@ -57,6 +60,8 @@ public:
 	void find_by_tag();
 
 	void find_by_date();
+
+	void find_by_prior();
 
 	void main_menu();
 

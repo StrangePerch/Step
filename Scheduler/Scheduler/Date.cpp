@@ -172,7 +172,7 @@ int getDaysInMonth(int _mon, int year)
 		return 31;
 		break;
 	default:
-		throw "Month out of range";
+		return 31;
 	}
 }
 
