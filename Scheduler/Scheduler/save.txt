@@ -1,7 +1,8 @@
-7 Title1 } blablablabla } School } 0 5 2 1987 1 12 0 6 10 2012 1 12 0 
+8 Title1 } blablablabla } School } 0 5 2 1987 1 12 0 6 10 2012 1 12 0 
+Add } asdfgsdgh } test } 4 3 12 2020 1 18 30 19 3 2019 1 10 30 
 Title3 } blablablabla } Other } 0 28 9 2020 1 19 0 28 9 2020 1 19 0 
 Title2 } blablablabla } School } 0 28 9 2020 1 20 0 28 9 2020 1 20 0 
 EXAM } Finish exam for step Thema: patters Language: c++ } Step } 0 1 10 2020 1 18 0 1 10 2020 1 18 0 
 Do smth } Do something } Other } 1 4 10 2020 1 12 0 4 10 2020 1 12 0 
-SaveTest } Check save } test } 3 2 10 2020 1 13 0 10 10 2020 1 12 0 
 NormalTitle } NormalTask } test } 2 30 11 3235 1 0 0 30 12 5523 1 24 0 
+123 } Check save } htrtj } 3 28 2 9999 1 24 0 28 2 9999 1 24 0 

@@ -126,7 +126,7 @@ public:
 
 	friend ostream& operator<< (ostream& os, Task& task)
 	{		
-		os << setw(10) << task.title << " " << setw(10) << task.tag;
+		os << setw(15) << task.title << " " << setw(10) << task.tag;
 		if (!(*task.start == *task.finish))
 			os << " from [" << *task.start << "] till [" << *task.finish << ']';
 		else

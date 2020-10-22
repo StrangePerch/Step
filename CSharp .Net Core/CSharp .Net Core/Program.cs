@@ -1,76 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+
 
 namespace av
 {
+
+    public delegate void VoidDelegate();
+
     class Program
     {
+
         static void Main()
         {
+            Bill bill = new Bill(1,2,3,4);
+            Bill.Full = true;
 
-            Group group = new Group();
 
-            group.Sort(new SurnameComparer());
-
-            foreach (var variable in group.GetPoints())
+            XmlSerializer xml = new XmlSerializer(typeof(Bill));
+            using (Stream fs = File.Create("File.txt"))
             {
-                Console.WriteLine(variable);
+                xml.Serialize(fs,bill);
             }
-
-
-            //const int size = 100000000;
-
-            //using (new OperationTimer.OperationTimer("Array"))
-            //{
-            //    ArrayList array = new ArrayList();
-            //    for (int i = 0; i < size; i++)
-            //    {
-            //        array.Add(1);
-            //        int x = (int)array[i];
-            //    }
-
-            //    array = null;
-            //}
-
-            //using (new OperationTimer.OperationTimer("List"))
-            //{
-            //    List<int> list = new List<int>();
-            //    for (int i = 0; i < size; i++)
-            //    {
-            //        list.Add(1);
-            //        int x = list[i];
-            //    }
-
-            //    list = null;
-            //}
-
-
+             
+            bill.Print();
         }
 
-        static void PrintTable(Hashtable group)
-        {
-            foreach (Student student in group.Keys)
-            {
-                Console.WriteLine(student);
-                if (student != null)
-                    foreach (var item in ((@group[student] as ArrayList)!))
-                    {
-                        Console.Write(item + " ");
-                    }
-
-                Console.WriteLine();
-            }
-        }
-
-        static void AddMark(Hashtable group, string name, int mark)
-        {
-            foreach (Student? student in group.Keys)
-            {
-                if (student?.Name == name)
-                    (group[student] as ArrayList)?.Add(mark);
-            }
-        }
     }
 }

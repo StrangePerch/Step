@@ -1,0 +1,116 @@
+#include <queue>
+#include <iostream>
+#include <list>
+#include <map>
+
+using namespace std;
+
+struct Date
+{
+	int day, month, year;
+};
+
+bool gg = false;
+
+void print_date(Date& date)
+{
+	if (date.day < 10) cout << '0';
+	cout << date.day << '/';
+	if (date.month < 10) cout << '0';
+	cout << date.month << '/';
+	if (date.year < 10) cout << '0';
+	cout << date.year << endl;
+	gg = true;
+}
+
+void isValid(Date& date)
+{
+	if (date.month > 0 && date.month <= 12 && date.year >= 0 && date.year <= 99 && date.year >= 1 && date.day > 0)
+		if (date.month == 2)
+		{
+			if (date.year % 400 == 0 || (date.year % 4 == 0 && date.year % 100 != 0))
+			{
+				if (date.day <= 29) 
+					print_date(date);
+			}
+			else
+			{
+				if (date.day <= 28) print_date(date);
+			}
+		}
+		else if (date.month == 4 || date.month == 6 || date.month == 9 || date.month == 11)
+		{
+			if (date.day <= 30) print_date(date);
+		}
+		else
+		{
+			if (date.day <= 31) print_date(date);
+		}
+}
+
+
+
+int main()
+{
+	string date;
+	
+	cin >> date;
+
+	if(date.size() > 8 || date.size() < 8)
+	{
+		cout << "No such date" << endl;
+		return 0;
+	}
+	
+	int a = (date[0] - '0') * 10 + (date[1] - '0');
+	int b = (date[3] - '0') * 10 + (date[4] - '0');
+	int c = (date[6] - '0') * 10 + (date[7] - '0');
+
+	if (a == b && b == c)
+	{
+		Date date1{ a,b,c };
+		isValid(date1);
+	}
+	else if(b == c)
+	{
+		Date date1{ a,b,c };
+		Date date3{ b,a,c };
+		Date date4{ b,c,a };
+		Date date5{ c,a,b };
+		isValid(date1);
+		isValid(date3);
+		isValid(date4);
+		isValid(date5);
+	}
+	else if (a == c)
+	{
+		Date date1{ a,b,c };
+		Date date2{ a,c,b };
+		Date date4{ b,c,a };
+		Date date6{ c,b,a };
+		isValid(date1);
+		isValid(date2);
+		isValid(date4);
+		isValid(date6);
+	}
+	else
+	{
+		Date date1{ a,b,c };
+		Date date2{ a,c,b };
+		Date date3{ b,a,c };
+		Date date4{ b,c,a };
+		Date date5{ c,a,b };
+		Date date6{ c,b,a };
+		isValid(date1);
+		isValid(date2);
+		isValid(date3);
+		isValid(date4);
+		isValid(date5);
+		isValid(date6);
+	}
+
+	if (gg == false) cout << "No such date" << endl;
+
+	
+	
+}

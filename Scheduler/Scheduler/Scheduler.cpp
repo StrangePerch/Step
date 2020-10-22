@@ -123,19 +123,20 @@ void Scheduler::print()
 {
 	int counter = 0;
 
-	int first = false;
+	int first = true;
 	
 	for (auto task : tasks)
 	{
 		if (*task.second->start <= *today_full() && *task.second->finish >= *today_full())
 		{
 			if (first) std::cout << "NOW:" << endl;
+			first = false;
 			counter++;
 			std::cout << "#" << counter << "- " << *task.second << endl;
 		}
 	}
 
-	first = false;
+	first = true;
 
 	counter = 0;
 	for (auto task : tasks)
@@ -143,6 +144,7 @@ void Scheduler::print()
 		if (*task.second->start == *today() || *task.second->finish == *today())
 		{
 			if (first) std::cout << "TODAY:" << endl;
+			first = false;
 			counter++;
 			std::cout << "#" << counter << "- " << *task.second << endl;
 		}
@@ -212,7 +214,7 @@ void Scheduler::calendar(int month, int year, int x, int y)
 	gotoxy(x, y);
 	
 	std::cout << setw(18) << getNameOfMonth(month, true) << endl;
-
+	
 	SetColor(Black, LightGray);
 
 	gotoxy(x, ++y);

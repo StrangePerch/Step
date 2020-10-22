@@ -1,0 +1,136 @@
+#include <queue>
+#include <iostream>
+#include <list>
+#include <map>
+
+using namespace std;
+
+class Student
+{
+public:
+	long int number;
+	long int arrival_time;
+	long int worker_time;
+	long int secretary_time;
+	long int timer = 0;
+	bool finished = false;
+
+	Student(long int num, long int t1, long int t2, long int t3)
+	{
+		number = num;
+		arrival_time = t1;
+		worker_time = t2;
+		secretary_time = t3;
+	}
+
+};
+
+class Worker
+{
+public:
+	Student* student;
+	long int arrival_time = 0;
+};
+
+class Secretary
+{
+public:
+	queue<Student*> _queue;
+};
+
+int main()
+{
+	long int time = 1;
+
+
+	vector<Student*> _students;
+	queue<Student*> students;
+	vector<Worker*> workers;
+	map<long int, Student*> released;
+
+	Secretary secretary;
+
+	long int s;
+	long int w;
+
+	cin >> s;
+	cin >> w;
+
+	for (long int i = 0; i < s; ++i)
+	{
+		long int t1 = 0, t2 = 0, t3 = 0;
+		cin >> t1 >> t2 >> t3;
+
+		Student* temp = new Student(i, t1, t2, t3);
+		_students.push_back(temp);
+	}
+
+	for (long int i = 0; i < w; ++i)
+	{
+		workers.push_back(new Worker());
+	}
+
+	while (true)
+	{
+		bool finish = true;
+
+		for (list<Student*>::value_type temp : _students)
+		{
+			if (temp->arrival_time == time) students.push(temp);
+		}
+
+		for (auto temp : workers)
+		{
+			if (temp->student != nullptr)
+			{
+				if (time == (temp->arrival_time + temp->student->worker_time))
+				{
+					temp->student->timer = time;
+					released.insert(make_pair(temp->student->number, temp->student));
+					temp->student = nullptr;
+				}
+			}
+			if (temp->student == nullptr && !students.empty())
+			{
+				temp->student = students.front();
+				temp->arrival_time = time;
+				students.pop();
+			}
+		}
+
+		for (auto temp : released)
+		{
+			secretary._queue.push(temp.second);
+		}
+		released.clear();
+
+		if (!secretary._queue.empty())
+		{
+			if (secretary._queue.front()->timer + secretary._queue.front()->secretary_time == time)
+			{
+				secretary._queue.front()->timer = time;
+				secretary._queue.front()->finished = true;
+				secretary._queue.pop();
+				if (!secretary._queue.empty())
+					secretary._queue.front()->timer = time;
+			}
+		}
+
+		for (vector<Student*>::value_type student : _students)
+		{
+			if (!student->finished)
+			{
+				finish = false;
+				break;
+			}
+		}
+
+		if (finish) break;
+
+		time++;
+	}
+	for (auto student : _students)
+	{
+		cout << student->timer << endl;
+	}
+}

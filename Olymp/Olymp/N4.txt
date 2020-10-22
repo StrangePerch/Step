@@ -1,0 +1,27 @@
+long int n;
+	cin >> n;
+	
+	int counter = 0;
+
+	int y = n;
+	int x = 0;
+	
+	while(x < y)
+	{
+		y = n;
+		while (y > x)
+		{
+			if (x + y + x * y == n) counter += 2;
+			y--;
+		}
+		x++;
+	}
+	
+	if(n % 2 == 0)
+	{
+		x = n / 2;
+		y = x;
+		if (x + y + x * y == n) counter ++;
+	}
+
+	cout << counter << endl;

@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace av
 {
+    [Serializable]
     class StudentCard
     {
         public string Series { get; set; }
@@ -17,6 +18,8 @@ namespace av
             return $"Student Card: {Series} {Number}";
         }
     }
+
+    [Serializable]
     class Student : ICloneable, IComparable
     {
         public string Name { get; set; }
@@ -37,6 +40,11 @@ namespace av
             return temp;
         }
 
+        public void Exam(string date)
+        {
+            Console.WriteLine($"Student {Name} has exam at {date}");
+        }
+
         public int CompareTo(object obj)
         {
             return Name.CompareTo((obj as Student).Name);
@@ -44,6 +52,33 @@ namespace av
         public override string ToString()
         {
             return $"Name: {Name}, Surname: {Surname}, BirthDay: {BirthDay.ToShortDateString()}, {StudentCard} ";
+        }
+    }
+    class Teacher
+    {
+        public delegate void ExamDelegate(string date);
+
+        SortedList<string, ExamDelegate> list = new SortedList<string, ExamDelegate>();
+
+        public event ExamDelegate ExamEvent
+        {
+            add
+            {
+                if (value.Target is Student)
+                    list.Add((value.Target as Student).Name, value);
+                else
+                    list.Add("Unknown", value);
+            }
+
+            remove => list.Remove((value.Target as Student).Name);
+        }
+
+        public void SetExam(string date)
+        {
+            foreach (var variable in list.Values)
+            {
+                variable(date);
+            }
         }
     }
 
@@ -160,6 +195,85 @@ namespace av
                 return st1.Series.CompareTo(st2.Series);
             else
                 return st1.Number.CompareTo(st2.Number);
+        }
+    }
+
+    static class Func
+    {
+        static void PrintTable(Hashtable group)
+        {
+            foreach (Student student in group.Keys)
+            {
+                Console.WriteLine(student);
+                if (student != null)
+                    foreach (var item in ((@group[student] as ArrayList)!))
+                    {
+                        Console.Write(item + " ");
+                    }
+
+                Console.WriteLine();
+            }
+        }
+
+        static void AddMark(Hashtable group, string name, int mark)
+        {
+            foreach (Student? student in group.Keys)
+            {
+                if (student?.Name == name)
+                    (group[student] as ArrayList)?.Add(mark);
+            }
+        }
+
+        static List<Student> getStudents()
+        {
+            List<Student> students = new List<Student>
+            {
+                new Student
+                {
+                    Name = "Tatyana",
+                    Surname = "Ivanova",
+                    BirthDay = new DateTime(1980, 12, 16),
+                    StudentCard = new StudentCard
+                    {
+                        Series = "AA",
+                        Number = 123456
+                    }
+                },
+                new Student
+                {
+                    Name = "Ivan",
+                    Surname = "Smirnoff",
+                    BirthDay = new DateTime(1983, 3, 11),
+                    StudentCard = new StudentCard
+                    {
+                        Series = "AB",
+                        Number = 651234
+                    }
+                },
+                new Student
+                {
+                    Name = "Olga",
+                    Surname = "Freymut",
+                    BirthDay = new DateTime(1985, 12, 20),
+                    StudentCard = new StudentCard
+                    {
+                        Series = "AA",
+                        Number = 651234
+                    }
+                },
+                new Student
+                {
+                    Name = "Nikolay",
+                    Surname = "Drozdov",
+                    BirthDay = new DateTime(1980, 5, 25),
+                    StudentCard = new StudentCard
+                    {
+                        Series = "CA",
+                        Number = 123456
+                    }
+                }
+            };
+            return students;
         }
     }
 }
